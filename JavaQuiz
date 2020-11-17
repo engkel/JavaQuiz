@@ -9,20 +9,21 @@ public class JavaQuiz {
         int player1Score = 0;
         int player2Score = 0;
         int currentPlayer = 0;
-        String chosenAnswer ="";
+        String chosenAnswer = "";
         Random rand = new Random();
         int generatedRandomNumber = 0;
         int numberForComparison = 0;
-        int selectedRandomNumber = 0;
+        int selectedRandomNumber = rand.nextInt(15);  //to ensure the first number is random as well
         boolean numberAccepted = false;
         int usedNumbersSizeTracker = 0;
 
         ArrayList<Integer> usedNumbers = new ArrayList<Integer>();
+        usedNumbers.add(generatedRandomNumber);  //to add the first number to the arraylist usedNumbers.
 
         String[][] questions =
                 {
-                        {"Is a String a primitive?","n"},  //[0][0]
-                        {"Is an integer a primitive?","y"}, //[1][0]
+                        {"Is a String a primitive?","n"},
+                        {"Is an integer a primitive?","y"},
                         {"Could you use a two-dimensional array to keep track of number of Olympic " +
                                 "medals won by each participating country?","y"},
                         {"Is a recursive method a method that calls itself?","y"},
@@ -60,43 +61,41 @@ public class JavaQuiz {
             }
             else {
                 generatedRandomNumber = rand.nextInt(15);
-                //checks an ArrayList if the questions has been used before.
-                for (int i = 0; i <= usedNumbers.size(); i++) {
-                    numberForComparison = usedNumbers.get(usedNumbers.size());
+                //Check if number used before - for-loop goes through ArrayList usedNumbers "its size" times
+                // to see if the question has been used before. i minus 1 to get the indexNo. If not used before
+                // assigns it to selectedRandomNumber and adds the number to the usedNumbers arraylist.
+                for (int i = 0; i < usedNumbers.size(); i++) {
+                    numberForComparison = usedNumbers.get(i);
+                    if (numberForComparison != generatedRandomNumber) {
+                        selectedRandomNumber = generatedRandomNumber;
+                        System.out.print("selectedRandomNumber="+ selectedRandomNumber+"\n");
+                        //Adds the question number to the Arraylist.
+                        usedNumbers.add(selectedRandomNumber);
+                        usedNumbersSizeTracker++;
+                        numberAccepted = true;
+                        break;
+                    }
                 }
             }
 
-            if (numberForComparison != generatedRandomNumber) {
-                selectedRandomNumber = numberForComparison;
-
-                //Adds the question number to the Arraylist.
-                usedNumbers.add(selectedRandomNumber);
-                usedNumbersSizeTracker++;
-            }
-            numberAccepted = true;
-
-            //used for selecting indexNo in the 2dArray questions
+            //selecting indexNo in the 2dArray questions
             System.out.println(questions[selectedRandomNumber][0]);
 
             Scanner ind = new Scanner(System.in);
-            chosenAnswer = ind.nextLine();
-
             //input validation y or n
             boolean acceptedInput = false;
-            while(acceptedInput = false){
-
-                if(chosenAnswer.equals("y")) {
-                    acceptedInput = true;
-                }
-                if(chosenAnswer.equals("n")) {
-                    acceptedInput = true;
+            while(!acceptedInput){
+                chosenAnswer = ind.nextLine();
+                if(chosenAnswer.equals("y") || chosenAnswer.equals("n")){
+                acceptedInput = true;
                 }
                 else {
-                    System.out.println("Try again. Please enter y or n");
-                }
+                System.out.println("Try again. Please enter y or n");
             }
 
-            if(questions[selectedRandomNumber][1].equals(chosenAnswer)){  //er det rigtig angivelse i 2darray?
+        }
+
+            if(questions[selectedRandomNumber][1].equals(chosenAnswer)){
                 System.out.println("Your answer was correct!");
                 if(currentPlayer == 1) {
                     player1Score++;
