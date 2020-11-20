@@ -3,123 +3,151 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class JavaQuiz {
+
     public static void main(String[] args) {
 
         int turnCounter = 0;
         int player1Score = 0;
         int player2Score = 0;
         int currentPlayer = 0;
+        //instead of having the issue of using questions & booleans in the 2dArray, I just used String "y" or "n".
         String chosenAnswer = "";
         Random rand = new Random();
         int generatedRandomNumber = 0;
         int numberForComparison = 0;
-        int selectedRandomNumber = rand.nextInt(15);  //to ensure the first number is random as well
-        boolean numberAccepted = false;
-        int usedNumbersSizeTracker = 0;
+        int selectedRandomNumber = 0;
+        boolean numberAccepted = false; //toggle for only accepting number after having checked if question has been used.
 
-        ArrayList<Integer> usedNumbers = new ArrayList<Integer>();
-        usedNumbers.add(generatedRandomNumber);  //to add the first number to the arraylist usedNumbers.
+        ArrayList<Integer> usedNumbers = new ArrayList<>();
 
         String[][] questions =
                 {
-                        {"Is a String a primitive?","n"},
-                        {"Is an integer a primitive?","y"},
+                        {"Is a String a primitive?", "n"},
+                        {"Is an integer a primitive?", "y"},
                         {"Could you use a two-dimensional array to keep track of number of Olympic " +
-                                "medals won by each participating country?","y"},
-                        {"Is a recursive method a method that calls itself?","y"},
-                        {"Can a double contain a more precise value than an integer?","y"},
-                        {"Can you use == to compare two Strings?","n"},
-                        {"Is javadoc a part of a class' public interface?","y"},
-                        {"When you write identical code should you consider introducing a method?","y"},
-                        {"Do you use the return statement to specify the result of a method?","y"},
-                        {"Is a formal parameter the same as a parameter variable?","y"},
-                        {"Does a do-loop execute the body of the loop at least twice?","n"},
-                        {"Do you mark the condition of a loop with brackets?","n"},
-                        {"Do you mark the statements of a loop with brackets?","y"},
-                        {"Do you write the name of a final variable with camel-case?","n"},
-                        {"Is it a good idea to make infinite loops in your code?","n"},
-                        {"Can you change the size of an array after its initialization?","n"}
+                                "medals won by each participating country?", "y"},
+                        {"Is a recursive method a method that calls itself?", "y"},
+                        {"Can a double contain a more precise value than an integer?", "y"},
+                        {"Can you use == to compare two Strings?", "n"},
+                        {"Is javadoc a part of a class' public interface?", "y"},
+                        {"When you write identical code should you consider introducing a method?", "y"},
+                        {"Do you use the return statement to specify the result of a method?", "y"},
+                        {"Is a formal parameter the same as a parameter variable?", "y"},
+                        {"Does a do-loop execute the body of the loop at least twice?", "n"},
+                        {"Do you mark the condition of a loop with brackets?", "n"},
+                        {"Do you mark the statements of a loop with braces?", "y"},
+                        {"Do you write the name of a final variable with camel-case?", "n"},
+                        {"Is it a good idea to make infinite loops in your code?", "n"},
+                        {"Can you change the size of an array after its initialization?", "n"}
                 };
 
-        System.out.println("How many questions in total would you like to answer in this quiz?");
+        //chooses number of turns and limits it to 2-16 (the number of unique questions)
+        System.out.println("\n***JAVA QUIZ***\nHow many questions in total would you like to answer in this quiz? (max.16)");
         Scanner in = new Scanner(System.in);
         int plannedTurns = in.nextInt();
+        while (plannedTurns < 2 || plannedTurns > 16) {
+            System.out.println("How many questions in total would you like to answer in this quiz? (max.16)");
+            plannedTurns = in.nextInt();
+           }
 
+        //the game is within a while loop that runs as long as the turnCounter hasn't reached the number of plannedTurns.
         while (plannedTurns != turnCounter) {
+            //to ensure the first number is random as well.
+            if(turnCounter == 0){
+                generatedRandomNumber = rand.nextInt(16);
+                //printing numbers of 2dArray for troubleshooting
+                for (Integer numbers : usedNumbers) {
+                    System.out.print(numbers + " - \n");
+                }
+            }
+            //resets numberAccepted toggle before choosing a new number.
+            numberAccepted = false;
 
+            //Checks if number has been used before - for-loop goes through ArrayList usedNumbers "its size" times
+            // to see if the question has been used before. If not used before
+            // assigns it to selectedRandomNumber and adds the number to the usedNumbers arraylist.
+            while (!numberAccepted) {
+                int j = 0;
+                while(j < usedNumbers.size()){
+                    numberForComparison = usedNumbers.get(j);
+                    System.out.println("Is numberForComparison: " + numberForComparison+ " the same as " +
+                            "generatedRandomNumber: "+generatedRandomNumber+" ?");
+                    if (numberForComparison == generatedRandomNumber){
+                        generatedRandomNumber = rand.nextInt(16);
+                    }
+                    else{
+                        j++;
+                    }
+                }
+                selectedRandomNumber = generatedRandomNumber;
+                numberAccepted = true;
+            }
+            usedNumbers.add(selectedRandomNumber);
+
+            //print out usedNumbers to see if it works (it doesn't.)
+            System.out.println("UsedNumbers contains: ");
+                for (Integer numbers : usedNumbers) {
+                    System.out.print(numbers + " - ");
+                }
+                System.out.println("\n");
+
+            //Player assignment
             if (turnCounter % 2 == 0) {
                 System.out.println("Player 1, please answer the following question by entering y for yes or n for no.");
                 currentPlayer = 1;
-            }
-            else {
+            } else {
                 System.out.println("player 2. please answer the following question by entering y for yes or n for no.");
                 currentPlayer = 2;
             }
 
-            if(turnCounter == 0) {
-                numberAccepted = true;
-            }
-            else {
-                generatedRandomNumber = rand.nextInt(15);
-                //Check if number used before - for-loop goes through ArrayList usedNumbers "its size" times
-                // to see if the question has been used before. i minus 1 to get the indexNo. If not used before
-                // assigns it to selectedRandomNumber and adds the number to the usedNumbers arraylist.
-                for (int i = 0; i < usedNumbers.size(); i++) {
-                    numberForComparison = usedNumbers.get(i);
-                    if (numberForComparison != generatedRandomNumber) {
-                        selectedRandomNumber = generatedRandomNumber;
-                        System.out.print("selectedRandomNumber="+ selectedRandomNumber+"\n");
-                        //Adds the question number to the Arraylist.
-                        usedNumbers.add(selectedRandomNumber);
-                        usedNumbersSizeTracker++;
-                        numberAccepted = true;
-                        break;
-                    }
-                }
-            }
-
-            //selecting indexNo in the 2dArray questions
+            //prints the question from the 2dArray questions based on the selectedRandomNumber.
             System.out.println(questions[selectedRandomNumber][0]);
 
             Scanner ind = new Scanner(System.in);
-            //input validation y or n
+            //input validation "y" or "n"
             boolean acceptedInput = false;
-            while(!acceptedInput){
+            while (!acceptedInput) {
                 chosenAnswer = ind.nextLine();
-                if(chosenAnswer.equals("y") || chosenAnswer.equals("n")){
-                acceptedInput = true;
+                if (chosenAnswer.equals("y") || chosenAnswer.equals("n")) {
+                    acceptedInput = true;
+                } else {
+                    System.out.println("Try again. Please enter y or n");
                 }
-                else {
-                System.out.println("Try again. Please enter y or n");
             }
 
-        }
-
-            if(questions[selectedRandomNumber][1].equals(chosenAnswer)){
+            //Checks 2dArray to see if the correct answer has been entered and Adds points to scores.
+            if (questions[selectedRandomNumber][1].equals(chosenAnswer)) {
                 System.out.println("Your answer was correct!");
-                if(currentPlayer == 1) {
+                if (currentPlayer == 1) {
                     player1Score++;
-                }
-                else{
+                } else {
                     player2Score++;
                 }
-            }
-            else {
+            } else {
                 System.out.println("Your answer was wrong!");
             }
-
             System.out.println("SCORES\nPlayer One: " + player1Score + "\nPlayer Two: " + player2Score);
-
             turnCounter++;
         }
 
-        if(player1Score > player2Score) {
-                System.out.println("Game over! " +
-                        "Player One won with a score of " + player1Score + " against Player Two's score of " + player2Score);
+        //Decides and prints the result of the quiz.
+        if (player1Score == player2Score) {
+            System.out.println("Game over! \n" +
+            "It's a draw!");
+        }
+        else if(player1Score > player2Score) {
+            System.out.println("Game over! \n" +
+            "Player One won with a score of " + player1Score + " against Player Two's score of " + player2Score);
         }
         else{
-                System.out.println("Game over!" +
-                        "Player Two won with a score of " + player2Score + " against Player One's score of " + player1Score);
+            System.out.println("Game over! \n" +
+            "Player Two won with a score of " + player2Score + " against Player One's score of " + player1Score);
+
         }
     }
 }
+
+
+
+
+
